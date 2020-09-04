@@ -13,7 +13,7 @@ import "./Joke.css";
  * App => JokeList => Joke
  */
 
-function Joke({ id, vote, votes, text }) {
+function Joke({ id, vote, votes, text, clickBot }) {
 
   return (
     <div className="Joke">
@@ -24,6 +24,10 @@ function Joke({ id, vote, votes, text }) {
 
         <button onClick={evt => vote(id, -1)}>
           <i className="fas fa-thumbs-down" />
+        </button>
+
+        <button onClick={evt => clickBot(id)}>
+          <i className="fas fa-infinity" />
         </button>
 
         {votes}

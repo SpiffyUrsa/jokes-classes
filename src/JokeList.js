@@ -19,6 +19,8 @@ function JokeList(props) {
 
   const [jokes, setJokes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isBotting, setIsBotting] = useState(false);
+  const [bottingId, setBottingId] = useState(Infinity);
 
   function generateNewJokes() {
     setIsLoading(true);
@@ -59,6 +61,15 @@ function JokeList(props) {
     if (isLoading) getJokes();
   }, [props.numJokesToGet, isLoading]);
 
+  function clickBot(id) {
+    setIsBotting(prevState => !prevState);
+    setBottingId(id);
+  }
+
+  useEffect(function botting() {
+     if (isBotting) vote(bottingId, 1);
+  }, [isBotting, bottingId, vote])
+
 
   let sortedJokes = [...jokes].sort((a, b) => b.votes - a.votes);
 
@@ -86,6 +97,7 @@ function JokeList(props) {
           id={j.id}
           votes={j.votes}
           vote={vote}
+          clickBot={clickBot}
         />
       ))}
     </div>
