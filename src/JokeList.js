@@ -19,7 +19,8 @@ function JokeList(props) {
 
   const [jokes, setJokes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isBotting, setIsBotting] = useState(false);
+  const [isUpBotting, setIsUpBotting] = useState(false);
+  const [isDownBotting, setIsDownBotting] = useState(false);
   const [bottingId, setBottingId] = useState(Infinity);
 
   function generateNewJokes() {
@@ -32,8 +33,9 @@ function JokeList(props) {
     ));
   }
 
+  // giving this function a name gives clarity + easier to talk about
   useEffect(function () {
-    async function getJokes() {
+    async function fetchJokes() {
       try {
         // load jokes one at a time, adding not-yet-seen jokes
         let newJokes = [];
@@ -58,17 +60,28 @@ function JokeList(props) {
         console.error(err);
       }
     }
-    if (isLoading) getJokes();
+    if (isLoading) fetchJokes();
   }, [props.numJokesToGet, isLoading]);
 
+
   function clickBot(id) {
-    setIsBotting(prevState => !prevState);
+    setIsUpBotting(prevState => !prevState);
     setBottingId(id);
   }
 
-  useEffect(function botting() {
-     if (isBotting) vote(bottingId, 1);
-  }, [isBotting, bottingId, vote])
+  useEffect(function upBotting() {
+    if (isUpBotting) vote(bottingId, +1);
+  }, [isUpBotting, bottingId, vote])
+
+
+  function downvoteBot(id) {
+    setIsDownBotting(prevState => !prevState);
+    setBottingId(id);
+  }
+
+  useEffect(function downBotting() {
+    if (isDownBotting) vote(bottingId, -1);
+  }, [isDownBotting, bottingId, vote])
 
 
   let sortedJokes = [...jokes].sort((a, b) => b.votes - a.votes);
@@ -92,12 +105,13 @@ function JokeList(props) {
 
       {sortedJokes.map(j => (
         <Joke
-          text={j.joke}
           key={j.id}
           id={j.id}
+          text={j.joke}
           votes={j.votes}
           vote={vote}
           clickBot={clickBot}
+          downvoteBot={downvoteBot}
         />
       ))}
     </div>
